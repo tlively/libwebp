@@ -11,6 +11,7 @@ option(WEBP_BUILD_GIF2WEBP "Build the gif2webp conversion tool." OFF)
 option(WEBP_BUILD_IMG2WEBP "Build the img2webp animation tool." OFF)
 option(WEBP_BUILD_WEBPINFO "Build the webpinfo command line tool." OFF)
 option(WEBP_BUILD_WEBP_JS "Emscripten build of webp.js." OFF)
+option(WEBP_BUILD_WEBP_WASM "Emscripten build of webp.js with wasm" OFF)
 option(WEBP_EXPERIMENTAL_FEATURES "Build with experimental features." OFF)
 option(WEBP_ENABLE_SWAP_16BIT_CSP "Enable byte swap for 16 bit colorspaces." OFF)
 
@@ -176,7 +177,8 @@ endforeach()
 
 # Build the executables if asked for.
 if(WEBP_BUILD_CWEBP OR WEBP_BUILD_DWEBP OR
-   WEBP_BUILD_GIF2WEBP OR WEBP_BUILD_IMG2WEBP OR WEBP_BUILD_WEBP_JS)
+   WEBP_BUILD_GIF2WEBP OR WEBP_BUILD_IMG2WEBP OR WEBP_BUILD_WEBP_JS OR
+   WEBP_BUILD_WEBP_WASM)
   # Example utility library.
   parse_Makefile_am(${CMAKE_CURRENT_SOURCE_DIR}/examples "EXAMPLEUTIL_SRCS"
     "example_util_[^ ]*")
@@ -273,8 +275,23 @@ if(WEBP_BUILD_WEBP_JS)
       "-s EXPORTED_FUNCTIONS='[\"_WebpToSDL\"]' -s INVOKE_RUN=0")
   set_target_properties(webp_js PROPERTIES OUTPUT_NAME webp)
   target_compile_definitions(webp_js PUBLIC EMSCRIPTEN WEBP_HAVE_SDL)
+  target_compile_definitions(webpdecoder PUBLIC EMSCRIPTEN)
+endif()
 
+if(WEBP_BUILD_WEBP_WASM)
   # WASM version
+  add_executable(webp_wasm
+                 ${CMAKE_CURRENT_SOURCE_DIR}/extras/webp_to_sdl.c)
+  target_link_libraries(webp_wasm webpdecoder SDL)
+  set(ENV{EMCC_WASM_BACKEND} 1)
+  set_target_properties(webp_wasm PROPERTIES LINK_FLAGS
+      "-s WASM=2 -s EXPORTED_FUNCTIONS='[\"_WebpToSDL\"]' -s INVOKE_RUN=0 -s EXPORTED_RUNTIME_METHODS='[\"cwrap\"]' -s SIMD=1 -s WASM_OBJECT_FILES=1")
+  target_compile_definitions(webp_wasm PUBLIC EMSCRIPTEN WEBP_HAVE_SDL)
+
+  target_compile_definitions(webpdecoder PUBLIC EMSCRIPTEN)
+endif()
+
+if(WEBP_BUILD_WASM)
   add_executable(webp_wasm
                  ${CMAKE_CURRENT_SOURCE_DIR}/extras/webp_to_sdl.c)
   target_link_libraries(webp_wasm webpdecoder SDL)

@@ -117,6 +117,10 @@ extern "C" {
 
 #endif  /* EMSCRIPTEN */
 
+#if defined(__wasm_simd128__) || defined(WEBP_HAVE_SIMD128)
+#define WEBP_USE_SIMD128
+#endif
+
 // This macro prevents thread_sanitizer from reporting known concurrent writes.
 #define WEBP_TSAN_IGNORE_FUNCTION
 #if defined(__has_feature)
@@ -157,6 +161,7 @@ typedef enum {
   kMIPS32,
   kMIPSdspR2,
   kMSA,
+  kSIMD128,
   kWASM
 } CPUFeature;
 // returns true if the CPU supports the feature.

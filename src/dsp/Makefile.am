@@ -3,6 +3,7 @@ noinst_LTLIBRARIES += libwebpdsp_sse2.la libwebpdspdecode_sse2.la
 noinst_LTLIBRARIES += libwebpdsp_sse41.la libwebpdspdecode_sse41.la
 noinst_LTLIBRARIES += libwebpdsp_neon.la libwebpdspdecode_neon.la
 noinst_LTLIBRARIES += libwebpdsp_msa.la libwebpdspdecode_msa.la
+noinst_LTLIBRARIES += libwebpdspdecode_simd128.la
 noinst_LTLIBRARIES += libwebpdspdecode_wasm.la
 
 if BUILD_LIBWEBPDECODER
@@ -97,6 +98,11 @@ libwebpdspdecode_msa_la_SOURCES += upsampling_msa.c
 libwebpdspdecode_msa_la_CPPFLAGS = $(libwebpdsp_msa_la_CPPFLAGS)
 libwebpdspdecode_msa_la_CFLAGS = $(libwebpdsp_msa_la_CFLAGS)
 
+libwebpdspdecode_simd128_la_SOURCES =
+libwebpdspdecode_simd128_la_SOURCES += dec_simd128.c
+libwebpdspdecode_simd128_la_CPPFLAGS = $(libwebpdsp_simd128_la_CPPFLAGS)
+libwebpdspdecode_simd128_la_CFLAGS = $(libwebpdsp_simd128_la_CFLAGS)
+
 # WASM is not fully integrated into configure; the addition here keeps source
 # extraction by cmake simple.
 libwebpdspdecode_wasm_la_SOURCES = dec_wasm.c
@@ -132,6 +138,12 @@ libwebpdsp_msa_la_CPPFLAGS = $(libwebpdsp_la_CPPFLAGS)
 libwebpdsp_msa_la_CFLAGS = $(AM_CFLAGS)
 libwebpdsp_msa_la_LIBADD = libwebpdspdecode_msa.la
 
+libwebpdsp_simd128_la_SOURCES =
+libwebpdsp_simd128_la_SOURCES += dec_simd128.c
+libwebpdsp_simd128_la_CPPFLAGS = $(libwebpdsp_la_CPPFLAGS)
+libwebpdsp_simd128_la_CFLAGS = $(AM_CFLAGS) $(SIMD128_FLAGS)
+libwebpdsp_simd128_la_LIBADD = libwebpdspdecode_simd128.la
+
 libwebpdsp_la_SOURCES = $(COMMON_SOURCES) $(ENC_SOURCES)
 
 noinst_HEADERS =
@@ -147,6 +159,7 @@ libwebpdsp_la_LIBADD += libwebpdsp_avx2.la libwebpdsp_sse2.la
 libwebpdsp_la_LIBADD += libwebpdsp_sse41.la
 libwebpdsp_la_LIBADD += libwebpdsp_neon.la
 libwebpdsp_la_LIBADD += libwebpdsp_msa.la
+libwebpdsp_la_LIBADD += libwebpdsp_simd128.la
 
 if BUILD_LIBWEBPDECODER
   libwebpdspdecode_la_SOURCES = $(COMMON_SOURCES)
@@ -158,4 +171,5 @@ if BUILD_LIBWEBPDECODER
   libwebpdspdecode_la_LIBADD += libwebpdspdecode_sse41.la
   libwebpdspdecode_la_LIBADD += libwebpdspdecode_neon.la
   libwebpdspdecode_la_LIBADD += libwebpdspdecode_msa.la
+  libwebpdspdecode_la_LIBADD += libwebpdspdecode_simd128.la
 endif

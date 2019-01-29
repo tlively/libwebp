@@ -700,6 +700,7 @@ extern void VP8DspInitNEON(void);
 extern void VP8DspInitMIPS32(void);
 extern void VP8DspInitMIPSdspR2(void);
 extern void VP8DspInitMSA(void);
+extern void VP8DspInitSIMD128(void);
 extern void VP8DspInitWASM(void);
 
 static volatile VP8CPUInfo dec_last_cpuinfo_used =
@@ -789,6 +790,11 @@ WEBP_TSAN_IGNORE_FUNCTION void VP8DspInit(void) {
 #if defined(WEBP_USE_MSA)
     if (VP8GetCPUInfo(kMSA)) {
       VP8DspInitMSA();
+    }
+#endif
+#if defined(WEBP_USE_SIMD128)
+    if (VP8GetCPUInfo(kSIMD128)) {
+      VP8DspInitSIMD128();
     }
 #endif
 #if defined(WEBP_USE_WASM)

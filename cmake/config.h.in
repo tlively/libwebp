@@ -118,6 +118,9 @@
 /* Set to 1 if PNG library is installed */
 #cmakedefine WEBP_HAVE_PNG 1
 
+/* Set to 1 if SIMD128 is supported */
+#cmakedefine WEBP_HAVE_SIMD128 1
+
 /* Set to 1 if SSE2 is supported */
 #cmakedefine WEBP_HAVE_SSE2 1
 

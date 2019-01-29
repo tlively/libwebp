@@ -143,6 +143,7 @@ DSP_DEC_OBJS = \
     src/dsp/dec_mips_dsp_r2.o \
     src/dsp/dec_msa.o \
     src/dsp/dec_neon.o \
+    src/dsp/dec_simd128.o \
     src/dsp/dec_sse2.o \
     src/dsp/dec_sse41.o \
     src/dsp/filters.o \

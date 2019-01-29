@@ -110,6 +110,12 @@ static int wasmCPUInfo(CPUFeature feature) {
   return 1;
 }
 VP8CPUInfo VP8GetCPUInfo = wasmCPUInfo;
+#elif defined(__wasm__)
+static int simd128CPUInfo(CPUFeature feature) {
+  if (feature != kSIMD128) return 0;
+  return 1;
+}
+VP8CPUInfo VP8GetCPUInfo = simd128CPUInfo;
 #elif defined(__i386__) || defined(__x86_64__) || defined(WEBP_MSC_SSE2)
 
 // helper function for run-time detection of slow SSSE3 platforms
